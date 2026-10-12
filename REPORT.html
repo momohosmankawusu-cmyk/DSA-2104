@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCOMP320 Assignment 1 - Stacks Implementation Report</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 20mm 20mm 20mm 20mm;
+            @bottom-right {
+                content: counter(page);
+                font-family: 'Tahoma', sans-serif;
+                font-size: 9pt;
+            }
+        }
+
+        body {
+            font-family: 'Tahoma', sans-serif;
+            font-size: 10pt;
+            line-height: 1.15;
+            text-align: justify;
+            color: #1a1a1a;
+            background-color: #f7f9fc;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .document-container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 50px 60px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-radius: 4px;
+        }
+
+        /* Cover Page Styling */
+        .cover-page {
+            text-align: center;
+            border: 3px double #0d3b66;
+            padding: 40px 30px;
+            margin-bottom: 40px;
+            page-break-after: always;
+            background: #ffffff;
+        }
+
+        .cover-page h1 {
+            font-size: 18pt;
+            letter-spacing: 1.5px;
+            color: #0d3b66;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .cover-page h2 {
+            font-size: 12pt;
+            color: #333333;
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #0d3b66;
+            padding-bottom: 12px;
+        }
+
+        .assignment-badge {
+            display: inline-block;
+            background: #f0f4f8;
+            border: 1px solid #c9d6df;
+            padding: 8px 18px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-weight: bold;
+            color: #0d3b66;
+            font-size: 11pt;
+        }
+
+        .cover-title {
+            font-size: 15pt;
+            font-weight: bold;
+            color: #111111;
+            margin: 25px 0 10px 0;
+            line-height: 1.3;
+        }
+
+        .cover-subtitle {
+            font-size: 11pt;
+            color: #4a5568;
+            margin-bottom: 35px;
+            font-style: italic;
+        }
+
+        .metadata-table {
+            width: 100%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 10pt;
+        }
+
+        .metadata-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .metadata-table td.label {
+            font-weight: bold;
+            color: #0d3b66;
+            width: 38%;
+        }
+
+        .metadata-table td.value {
+            color: #2d3748;
+        }
+
+        /* Typography & Layout */
+        h1, h2, h3, h4 {
+            color: #0d3b66;
+            font-family: 'Tahoma', sans-serif;
+            font-weight: bold;
+            page-break-after: avoid;
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 14pt;
+            border-bottom: 1.5px solid #0d3b66;
+            padding-bottom: 4px;
+        }
+
+        h2 {
+            font-size: 12pt;
+        }
+
+        h3 {
+            font-size: 10.5pt;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        ul, ol {
+            margin-top: 0;
+            margin-bottom: 10px;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 4px;
+            text-align: justify;
+        }
+
+        /* Tables */
+        table.content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 9.5pt;
+            page-break-inside: avoid;
+        }
+
+        table.content-table th, table.content-table td {
+            border: 1px solid #cbd5e1;
+            padding: 7px 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        table.content-table th {
+            background-color: #f1f5f9;
+            color: #0d3b66;
+            font-weight: bold;
+        }
+
+        table.content-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .badge-pass {
+            background-color: #dcfce7;
+            color: #15803d;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 8.5pt;
+            display: inline-block;
+        }
+
+        /* Code & Pre */
+        pre {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #0d3b66;
+            padding: 10px 14px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 9pt;
+            line-height: 1.25;
+            overflow-x: auto;
+            margin: 12px 0;
+            page-break-inside: avoid;
+            text-align: left;
+        }
+
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 9pt;
+            background-color: #f1f5f9;
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        /* Box Callouts */
+        .callout-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0284c7;
+            padding: 10px 14px;
+            margin: 14px 0;
+            border-radius: 2px;
+            font-size: 9.5pt;
+            page-break-inside: avoid;
+        }
+
+        .callout-box strong {
+            color: #0369a1;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        /* Print Media Styles */
+        @media print {
+            body {
+                background: #ffffff;
+                padding: 0;
+                font-family: 'Tahoma', sans-serif !important;
+                font-size: 10pt !important;
+                line-height: 1.15 !important;
+                text-align: justify !important;
+            }
+
+            .document-container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .cover-page {
+                border: 2px solid #0d3b66;
+                padding: 30px;
+                min-height: 85vh;
+            }
+
+            pre, table {
+                page-break-inside: avoid;
+            }
+        }
+
+        .print-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #0d3b66;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Tahoma', sans-serif;
+            font-size: 11pt;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: background 0.2s;
+            z-index: 1000;
+        }
+
+        .print-btn:hover {
+            background: #092642;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn no-print" onclick="window.print()">Print / Save as PDF</button>
+
+    <div class="document-container">
+
+        <!-- TITLE / COVER PAGE -->
+        <div class="cover-page">
+            <h1>Limkokwing University of Creative Technology</h1>
+            <h2>Sierra Leone — Department of Information and Communication Technology</h2>
+            
+            <div class="assignment-badge">
+                DCOMP320: DATA STRUCTURES AND ALGORITHM &bull; INDIVIDUAL ASSIGNMENT (10%)
+            </div>
+
+            <div class="cover-title">
+                STACKS IMPLEMENTATION: MATHEMATICAL EXPRESSION EVALUATOR
+            </div>
+            <div class="cover-subtitle">
+                A Stack-Based Parsing and Evaluation System for Text-Delimited Mathematical Expressions
+            </div>
+
+            <table class="metadata-table">
+                <tr>
+                    <td class="label">Course Code & Title:</td>
+                    <td class="value"><strong>DCOMP320 — Data Structures and Algorithm</strong></td>
+                </tr>
+                <tr>
+                    <td class="label">Assignment:</td>
+                    <td class="value">Stacks Implementation (Expression Evaluation from File)</td>
+                </tr>
+                <tr>
+                    <td class="label">Student Name:</td>
+                    <td class="value"><strong>Osman Kaimapo Momoh</strong></td>
+                </tr>
+                <tr>
+                    <td class="label">Academic Semester:</td>
+                    <td class="value">Semester 03 & 05 (September 2026 – February 2027)</td>
+                </tr>
+                <tr>
+                    <td class="label">Examiner:</td>
+                    <td class="value">Amandus Benjamin Coker (<code>amandus.bcoker@limkokwing.edu.sl</code>)</td>
+                </tr>
+                <tr>
+                    <td class="label">Checked By:</td>
+                    <td class="value">Sheik Umar Kanu</td>
+                </tr>
+                <tr>
+                    <td class="label">Submission Date:</td>
+                    <td class="value">October 2026</td>
+                </tr>
+            </table>
+
+            <div style="margin-top: 40px; font-size: 9pt; color: #64748b; border-top: 1px solid #cbd5e1; padding-top: 15px;">
+                Prepared in strict compliance with the Department of Information and Communication Technology Academic Integrity Guidelines and Specified Format (Tahoma, 10pt, Line Spacing 1.15, Justified Alignment).
+            </div>
+        </div>
+
+        <!-- 2. INTRODUCTION -->
+        <h1>2. Introduction</h1>
+        <p>
+            The accurate evaluation of mathematical expressions is a core problem in computational theory, language interpreter architecture, and compiler engineering. In traditional mathematical discourse, expressions are formulated using <strong>infix notation</strong>, wherein binary arithmetic operators (+, -, *, /) are situated between their respective operands (e.g., <code>3 + 5 * 2</code>). While intuitive for human comprehension, infix notation presents computational ambiguity because evaluation order is governed not by linear positioning, but by operator precedence, left-to-right associativity rules, and parenthetical hierarchies.
+        </p>
+        <p>
+            Digital computing architectures evaluate instructions sequentially and cannot resolve arbitrary infix expressions without an auxiliary memory model. The <strong>Stack</strong> abstract data type (ADT), operating under the Last-In, First-Out (LIFO) protocol, is the premier data structure for parsing and evaluating such syntactic structures.
+        </p>
+        <p>
+            The primary objective of this project is to implement an end-to-end Python program that:
+        </p>
+        <ol>
+            <li>Implements an object-oriented <code>Stack</code> class with essential operations: <code>push</code>, <code>pop</code>, <code>peek</code>, <code>is_empty</code>, and <code>size</code>.</li>
+            <li>Reads mathematical expressions from an input file (<code>input.txt</code>), in which individual expressions are delimited by separator lines (such as <code>-----</code>).</li>
+            <li>Evaluates each mathematical expression using a two-stage stack algorithm combining Dijkstra’s Shunting-Yard infix-to-postfix transformation with a stack-based postfix evaluator.</li>
+            <li>Writes the computed numerical results to an output file (<code>output.txt</code>), maintaining the exact layout and delimiters of the input file.</li>
+        </ol>
+
+        <!-- 3. DATA STRUCTURES USED -->
+        <h1>3. Data Structures Used</h1>
+
+        <h2>3.1 Detailed Description of the Stack Data Structure</h2>
+        <p>
+            A <strong>Stack</strong> is a linear collection of elements with a restricted access discipline governed strictly by the <strong>Last-In, First-Out (LIFO)</strong> principle. Under LIFO, the element most recently inserted is guaranteed to be the first element removed. Access is permitted solely at the designated summit of the structure, known as the <strong>top</strong>, while the initial insertion point is termed the <strong>base</strong>.
+        </p>
+        <p>
+            The formal abstract contract of a Stack defines the following fundamental operations:
+        </p>
+        <ul>
+            <li><strong><code>push(item)</code>:</strong> Inserts an element onto the top of the stack. In a dynamic-array-backed implementation (such as Python's list), this runs in amortized $\mathcal{O}(1)$ time complexity.</li>
+            <li><strong><code>pop()</code>:</strong> Removes and returns the element currently at the top of the stack. If invoked on an empty stack, it signals a <strong>Stack Underflow</strong> exception. Operates in $\mathcal{O}(1)$ time.</li>
+            <li><strong><code>peek()</code>:</strong> Inspects and returns the element at the top without removing it, running in $\mathcal{O}(1)$ time.</li>
+            <li><strong><code>is_empty()</code>:</strong> Returns a boolean flag indicating whether the stack contains zero elements ($\mathcal{O}(1)$).</li>
+            <li><strong><code>size()</code>:</strong> Returns the total integer count of elements currently stored ($\mathcal{O}(1)$).</li>
+        </ul>
+
+        <h2>3.2 Explanation of How the Stack is Used to Evaluate Expressions</h2>
+        <p>
+            To evaluate infix expressions reliably without ambiguous grammar or backtracking, the program employs two coordinated stack instances across two consecutive stages:
+        </p>
+        <p>
+            <strong>Stage 1: Infix to Postfix Conversion (Dijkstra's Shunting-Yard Algorithm)</strong><br>
+            In Postfix notation (Reverse Polish Notation), operators follow their operands, eliminating all parentheses and precedence ambiguity. An <em>Operator Stack</em> is used to defer operators until all operands of higher precedence have been processed:
+        </p>
+        <ul>
+            <li>Operands (integers and decimals) are immediately routed to the postfix output stream.</li>
+            <li>When an opening parenthesis <code>(</code> is encountered, it is pushed onto the Operator Stack to demarcate a nested scope.</li>
+            <li>When a closing parenthesis <code>)</code> appears, operators are continuously popped from the Operator Stack to the output stream until the corresponding <code>(</code> is encountered and removed.</li>
+            <li>When an arithmetic operator (+, -, *, /) arrives, operators on top of the stack having greater or equal precedence are popped to the output before the incoming operator is pushed.</li>
+        </ul>
+        <p>
+            <strong>Stage 2: Postfix Evaluation (Operand Stack)</strong><br>
+            The resulting postfix token sequence is evaluated linearly from left to right using an <em>Operand Stack</em>:
+        </p>
+        <ul>
+            <li>Whenever a numerical operand is encountered, it is pushed onto the Operand Stack.</li>
+            <li>Whenever an operator is encountered, the top two elements are popped: the first popped element serves as the right operand ($b$) and the second popped element serves as the left operand ($a$). The operation $a \text{ op } b$ is computed, and the result is pushed back onto the stack.</li>
+            <li>Upon consuming all tokens, the final remaining value atop the Operand Stack is popped as the definitive mathematical result.</li>
+        </ul>
+
+        <h2>3.3 Importance of Stack Data Structures in Computing</h2>
+        <p>
+            Beyond expression evaluation, stacks are indispensable across core domains of computing:
+        </p>
+        <ul>
+            <li><strong>Function Call Stack and Execution Scopes:</strong> Modern microprocessors and programming language runtimes allocate stack frames during subroutine calls to preserve instruction pointers, return addresses, parameter bindings, and local variable scopes. This mechanism enables recursive algorithms.</li>
+            <li><strong>Syntax Parsing and Abstract Syntax Trees:</strong> Compilers employ deterministic shift-reduce stack parsers (such as LR, LALR, and LL parsers) to validate grammatical correctness and assemble abstract syntax trees from source text.</li>
+            <li><strong>Memory Safety and Backtracking:</strong> Depth-First Search (DFS) graph traversals, backtracking engines for constraint satisfaction, and maze-solving algorithms use stacks to store decision frontiers.</li>
+            <li><strong>Software History Management:</strong> Application-level undo and redo features maintain state diffs on dedicated stacks, permitting seamless reversal of user actions.</li>
+        </ul>
+
+        <!-- 4. PROGRAM DESIGN -->
+        <div class="page-break"></div>
+        <h1>4. Program Design</h1>
+
+        <h2>4.1 Outline of the Program's Architecture</h2>
+        <p>
+            The solution is architected in a modular, highly decoupled design divided into four distinct components:
+        </p>
+        <ul>
+            <li><strong><code>Stack</code> Module:</strong> Encapsulates data storage, invariants, and underflow error handling.</li>
+            <li><strong><code>ExpressionEvaluator</code> Engine:</strong> Implements the lexical tokenizer, Shunting-Yard conversion, and postfix numerical evaluation.</li>
+            <li><strong>File Processing Layer (<code>process_file</code>):</strong> Handles streaming I/O, delimiter preservation, and non-fatal error logging.</li>
+            <li><strong>Command-Line Interface (<code>main</code>):</strong> Provides formatted console feedback, supports optional custom argument paths, and displays summary statistics.</li>
+        </ul>
+
+        <h2>4.2 Description of Key Functions</h2>
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th style="width: 28%;">Function / Method</th>
+                    <th style="width: 32%;">Class / Scope</th>
+                    <th style="width: 40%;">Functional Responsibility</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>push(item)</code></td>
+                    <td><code>Stack</code></td>
+                    <td>Inserts <code>item</code> to the top of the stack in $\mathcal{O}(1)$ time.</td>
+                </tr>
+                <tr>
+                    <td><code>pop()</code></td>
+                    <td><code>Stack</code></td>
+                    <td>Removes and returns the top element; raises <code>StackUnderflowError</code> if empty.</td>
+                </tr>
+                <tr>
+                    <td><code>peek()</code></td>
+                    <td><code>Stack</code></td>
+                    <td>Returns the top element without mutation; validates stack state.</td>
+                </tr>
+                <tr>
+                    <td><code>tokenize(expr)</code></td>
+                    <td><code>ExpressionEvaluator</code></td>
+                    <td>Extracts multi-digit numbers, decimals, operators, and handles unary negative values.</td>
+                </tr>
+                <tr>
+                    <td><code>infix_to_postfix(tokens)</code></td>
+                    <td><code>ExpressionEvaluator</code></td>
+                    <td>Transforms infix token stream to RPN using the Operator Stack and precedence rules.</td>
+                </tr>
+                <tr>
+                    <td><code>evaluate_postfix(tokens)</code></td>
+                    <td><code>ExpressionEvaluator</code></td>
+                    <td>Computes postfix representation using an Operand Stack, detecting zero division.</td>
+                </tr>
+                <tr>
+                    <td><code>format_result(val)</code></td>
+                    <td><code>ExpressionEvaluator</code></td>
+                    <td>Formats integers without trailing decimal zeros (e.g. <code>13</code> instead of <code>13.0</code>).</td>
+                </tr>
+                <tr>
+                    <td><code>is_separator_line(line)</code></td>
+                    <td>Global Utility</td>
+                    <td>Identifies delimiter lines consisting of 2+ repeated divider characters (<code>-----</code>).</td>
+                </tr>
+                <tr>
+                    <td><code>process_file(in, out)</code></td>
+                    <td>Global File I/O Engine</td>
+                    <td>Reads input file, evaluates each expression, preserves separators, and writes to output.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>4.3 Flowchart and Pseudocode</h2>
+
+        <h3>Algorithm 1: Infix to Postfix Conversion (Shunting-Yard)</h3>
+        <pre>
+Algorithm InfixToPostfix(tokens):
+    Input: List of infix tokens
+    Output: List of postfix tokens (RPN)
+    
+    output = empty list
+    op_stack = new Stack()
+    
+    For each token in tokens:
+        If token is a number:
+            output.append(token)
+        Else If token == '(':
+            op_stack.push(token)
+        Else If token == ')':
+            While not op_stack.is_empty() and op_stack.peek() != '(':
+                output.append(op_stack.pop())
+            If op_stack.is_empty():
+                Throw Error("Mismatched parentheses: missing '('")
+            op_stack.pop()  // Discard matching '('
+        Else If token in {'+', '-', '*', '/'}:
+            While (not op_stack.is_empty() and op_stack.peek() != '(' and
+                   Precedence(op_stack.peek()) >= Precedence(token)):
+                output.append(op_stack.pop())
+            op_stack.push(token)
+            
+    While not op_stack.is_empty():
+        top = op_stack.pop()
+        If top == '(' or top == ')':
+            Throw Error("Mismatched parentheses")
+        output.append(top)
+        
+    Return output
+        </pre>
+
+        <h3>Algorithm 2: Postfix Expression Evaluation</h3>
+        <pre>
+Algorithm EvaluatePostfix(postfix_tokens):
+    Input: List of postfix tokens
+    Output: Evaluated numerical result
+    
+    val_stack = new Stack()
+    
+    For each token in postfix_tokens:
+        If token is a number:
+            val_stack.push(ParseNumber(token))
+        Else If token in {'+', '-', '*', '/'}:
+            If val_stack.size() < 2:
+                Throw Error("Insufficient operands")
+            b = val_stack.pop()  // Right operand
+            a = val_stack.pop()  // Left operand
+            Switch token:
+                Case '+': res = a + b
+                Case '-': res = a - b
+                Case '*': res = a * b
+                Case '/': 
+                    If b == 0: Throw Error("Division by zero")
+                    res = a / b
+            val_stack.push(res)
+            
+    If val_stack.size() != 1:
+        Throw Error("Malformed expression: extraneous operands")
+        
+    Return val_stack.pop()
+        </pre>
+
+        <!-- 5. TESTING AND RESULTS -->
+        <div class="page-break"></div>
+        <h1>5. Testing and Results</h1>
+
+        <h2>5.1 Explanation of Testing Methodology</h2>
+        <p>
+            The software was validated through an automated, multi-tiered quality assurance protocol:
+        </p>
+        <ol>
+            <li><strong>Automated Unit Test Suite (<code>test_evaluator.py</code>):</strong> Implemented 17 automated tests executing under Python's official <code>unittest</code> framework. Test categories included stack invariant preservation, underflow exception raising, arithmetic precedence validation, left-to-right associativity testing, nested parentheses parsing, and floating-point accuracy.</li>
+            <li><strong>File System Roundtrip Integration Testing:</strong> Tested file reading, expression parsing, separator preservation, and file output generation under normal and boundary conditions.</li>
+            <li><strong>Comprehensive Edge-Case Testing (<code>test_comprehensive_input.txt</code>):</strong> Evaluated 13 expressions covering multi-digit operands, division resulting in non-terminating fractions, negative numbers, division by zero, and syntax errors.</li>
+        </ol>
+
+        <h2>5.2 Discussion of Results Concerning <code>input.txt</code> and <code>output.txt</code></h2>
+        <p>
+            The program was executed against the primary specification input file <code>input.txt</code>:
+        </p>
+        <pre>
+3 + 5 * 2
+-----
+(8 / 4) + 7 * 2
+-----
+10 - (2 + 3) * 4
+        </pre>
+        <p>
+            The program successfully generated the corresponding <code>output.txt</code>:
+        </p>
+        <pre>
+13
+-----
+16
+-----
+-10
+        </pre>
+
+        <p><strong>Step-by-Step Mathematical Analysis of Expressions:</strong></p>
+        <ul>
+            <li>
+                <strong>Expression 1 (<code>3 + 5 * 2</code>):</strong> Multiplication has higher precedence than addition. The subexpression <code>5 * 2</code> computes to <code>10</code>, followed by <code>3 + 10 = 13</code>. The output <code>13</code> precisely matches the assignment example.
+            </li>
+            <li>
+                <strong>Expression 2 (<code>(8 / 4) + 7 * 2</code>):</strong> The parentheses isolate <code>(8 / 4)</code>, which evaluates to <code>2</code>. Next, multiplication executes: <code>7 * 2 = 14</code>. Finally, addition executes: <code>2 + 14 = 16</code>.<br>
+                <div class="callout-box">
+                    <strong>Note Regarding Assignment Specification Visual:</strong> In the assignment prompt diagram, the result box for expression 2 displays either <code>17</code> or <code>16</code>. Rigorous mathematical evaluation confirms that $(8 / 4) + 7 \times 2 = 2 + 14 = 16$. If $17$ was intended, the subexpression would have been $(6 / 2) + 7 \times 2 = 17$ or $(9 / 3) + 7 \times 2 = 17$. The implemented engine computes the mathematically correct value <code>16</code>.
+                </div>
+            </li>
+            <li>
+                <strong>Expression 3 (<code>10 - (2 + 3) * 4</code>):</strong> The parentheses isolate <code>(2 + 3)</code>, yielding <code>5</code>. Next, multiplication evaluates <code>5 * 4 = 20</code>. Subtraction evaluates <code>10 - 20 = -10</code>. The output <code>-10</code> precisely matches the assignment specification.
+            </li>
+        </ul>
+
+        <h2>5.3 Comprehensive Empirical Test Matrix</h2>
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">ID</th>
+                    <th style="width: 32%;">Expression Tested</th>
+                    <th style="width: 20%;">Expected Result</th>
+                    <th style="width: 23%;">Observed Result</th>
+                    <th style="width: 15%;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>TC-01</strong></td>
+                    <td><code>3 + 5 * 2</code></td>
+                    <td>13</td>
+                    <td>13</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td><strong>TC-02</strong></td>
+                    <td><code>(8 / 4) + 7 * 2</code></td>
+                    <td>16</td>
+                    <td>16</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td><strong>TC-03</strong></td>
+                    <td><code>10 - (2 + 3) * 4</code></td>
+                    <td>-10</td>
+                    <td>-10</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td><strong>TC-04</strong></td>
+                    <td><code>100 + 250 * 2</code></td>
+                    <td>600</td>
+                    <td>600</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td><strong>TC-05</strong></td>
+                    <td><code>20 / 4 + 3 * 2</code></td>
+                    <td>11</td>
+                    <td>11</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td><strong>TC-06</strong></td>
+                    <td><code>10 - 4 - 2</code> (Associativity)</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td><strong>TC-07</strong></td>
+                    <td><code>((2 + 3) * (4 + 1)) / 5</code></td>
+                    <td>5</td>
+                    <td>5</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td><strong>TC-08</strong></td>
+                    <td><code>10.5 + 4.5 * 2</code> (Decimals)</td>
+                    <td>19.5</td>
+                    <td>19.5</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td><strong>TC-09</strong></td>
+                    <td><code>-5 + 10</code> (Unary Minus)</td>
+                    <td>5</td>
+                    <td>5</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td><strong>TC-10</strong></td>
+                    <td><code>-(4 + 6) * 2</code></td>
+                    <td>-20</td>
+                    <td>-20</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td><strong>TC-11</strong></td>
+                    <td><code>7 / 2</code> (Floating division)</td>
+                    <td>3.5</td>
+                    <td>3.5</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td><strong>TC-12</strong></td>
+                    <td><code>25 / 0</code> (Division by zero)</td>
+                    <td>Error: Division by zero</td>
+                    <td>Error: Division by zero</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td><strong>TC-13</strong></td>
+                    <td><code>(5 + 2 * 3</code> (Unmatched parenthesis)</td>
+                    <td>Error: Mismatched parentheses</td>
+                    <td>Error: Mismatched parentheses</td>
+                    <td><span class="badge-pass">PASS</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 6. CONCLUSION & GITHUB -->
+        <h1>6. Conclusion</h1>
+        <p>
+            The project fulfilled all objectives stipulated in the DCOMP320 assignment brief. By implementing a custom <code>Stack</code> class and pairing it with Dijkstra’s Shunting-Yard algorithm and a Postfix Evaluator, the system successfully parsed and evaluated infix arithmetic expressions with complete operator precedence and parenthesis management. File reading and writing was achieved cleanly, ensuring separator lines were preserved. The code demonstrated 100% test passage across 17 automated unit tests.
+        </p>
+
+        <h2>6.1 GitHub Repository & Lecturer Collaboration</h2>
+        <p>
+            In accordance with Section D.b.6 of the assignment submission requirements, the project codebase is version-controlled with Git and hosted on GitHub.
+        </p>
+        <p><strong>Steps Executed:</strong></p>
+        <ol>
+            <li><strong>Git Repository Initialized:</strong> All source files (<code>expression_evaluator.py</code>, <code>main.py</code>, <code>test_evaluator.py</code>, <code>input.txt</code>, <code>output.txt</code>, <code>README.md</code>, and <code>REPORT.html</code>) were committed.</li>
+            <li><strong>Remote Repository Hosted:</strong> The branch was pushed to GitHub.</li>
+            <li><strong>Lecturer Added as Collaborator:</strong> The examiner, <strong>Amandus Benjamin Coker</strong> (<code>amandus.bcoker@limkokwing.edu.sl</code>), was invited as an official collaborator via GitHub Repository Settings > Collaborators.</li>
+        </ol>
+
+        <!-- 7. REFERENCES -->
+        <h1>7. References</h1>
+        <ol>
+            <li>Aho, A. V., Lam, M. S., Sethi, R., & Ullman, J. D. (2006). <em>Compilers: Principles, Techniques, and Tools</em> (2nd ed.). Boston, MA: Addison-Wesley.</li>
+            <li>Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C. (2022). <em>Introduction to Algorithms</em> (4th ed.). Cambridge, MA: The MIT Press.</li>
+            <li>Dijkstra, E. W. (1961). <em>Algol 60 translation: An Algol 60 translator for the X1 and Making a translator for ALGOL 60</em>. Mathematisch Centrum Amsterdam, Report MR 35/61.</li>
+            <li>Goodrich, M. T., Tamassia, R., & Goldwasser, M. H. (2013). <em>Data Structures and Algorithms in Python</em>. Hoboken, NJ: John Wiley & Sons.</li>
+            <li>Knuth, D. E. (1997). <em>The Art of Computer Programming, Volume 1: Fundamental Algorithms</em> (3rd ed.). Boston, MA: Addison-Wesley.</li>
+            <li>Python Software Foundation. (2026). <em>Python 3 Standard Library Documentation: Built-in Types and unittest Framework</em>. https://docs.python.org/3/</li>
+        </ol>
+
+    </div>
+
+</body>
+</html>
