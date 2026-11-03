@@ -1,15 +1,4 @@
-# DCOMP320: Data Structures and Algorithm — Assignment 1
-## Stack-Based Mathematical Expression Evaluator
 
-**Institution:** Limkokwing University of Creative Technology — Sierra Leone  
-**Faculty / Department:** Department of Information and Communication Technology  
-**Course:** DCOMP320 — Data Structures and Algorithm  
-**Semester:** Semester 03 & 05 (September 2026 to February 2027)  
-**Student Name:** Osman Kaimapo Momoh  
-**Examiner:** Amandus Benjamin Coker (`amandus.bcoker@limkokwing.edu.sl`)  
-**Assignment Weight:** 10% (100 Marks)
-
----
 
 ## 1. Project Overview
 
